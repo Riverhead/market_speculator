@@ -33,56 +33,32 @@ class BTSX():
         feeds = response.json()["result"]
         return feeds[len(feeds)-1]["median_price"]
 
-    def submit_bid(self, account_name, amount, quote, price, base):
-        response = self.request("bid", [account_name, amount, quote, price, base])
+    def submit_bid(self, account, amount, quote, price, base):
+        response = self.request("bid", [account, amount, quote, price, base])
         if response.status_code != 200:
-            log("%s submitted a bid" % account_name)
+            log("%s submitted a bid" % account)
             log(response.json())
             return False
         else:
             return response.json()
-
-    def submit_ask(self, account_name, amount, quote, price, base):
-        response = self.request("ask", [account_name, amount, quote, price, base])
+    def submit_ask(self, account, amount, quote, price, base):
+        response = self.request("ask", [account, amount, quote, price, base])
         if response.status_code != 200:
-            log("%s submitted an ask" % account_name())
+            log("%s submitted an ask" % account())
             log(response.json())
             return False
         else:
             return response.json()
-
-    def get_last_fill (self, asset1, asset2):
-        last_fill = -1
-        response = self.request("blockchain_market_order_history", [asset1, asset2, 0, 1])
-        for order in response.json()["result"]:
-            last_fill = float(order["ask_price"]["ratio"]) * 10
-        return last_fill
-
-
     def get_lowest_ask(self, asset1, asset2):
-        highest_ask = -1
-        response = self.request("blockchain_market_order_book", [asset1, asset2, 1])
-        for order in response.json()["result"][1]:
-            if order["type"] == "ask_order":
-               lowest_ask = float(order["market_index"]["order_price"]["ratio"]) * 10
-        return lowest_ask
-
-    def get_highest_bid(self, asset1, asset2):
-        highest_bid = -1
-        response = self.request("blockchain_market_order_book", [asset1, asset2, -1])
-        for order in response.json()["result"][0]:
-            if order["type"] == "bid_order":
-               highest_bid = float(order["market_index"]["order_price"]["ratio"]) * 10
-               return highest_bid
-        return highest_bid
-
+        response = self.request("blockchain_market_order_book", [asset1, asset2])
+        return response.json()["result"][0][0]
         
-    def get_balance(self, account_name, asset):
+    def get_balance(self, account, asset):
         asset_id = 22
         if asset == "BTSX":
             asset_id = 0
 
-        response = self.request("wallet_account_balance", [account_name, asset])
+        response = self.request("wallet_account_balance", [account, asset])
         if not response.json():
             log("Error in get_balance: %s", response["_content"]["message"])
             return None
@@ -143,16 +119,26 @@ class BTSX():
     def cancel_all_orders(self, account, base, quote):
         response = self.request("wallet_market_order_list", [base, quote, -1, account])
         order_ids = []
-        print response.json()
-        if response.status_code != 200:
-            for item in response.json()["result"]:
-                order_ids.append(item["market_index"]["owner"])
-            cancel_args = [[item] for item in order_ids]
-            response = self.request("batch", ["wallet_market_cancel_order", cancel_args])
-            return cancel_args
+        for pair in response.json()["result"]:
+            order_id = pair[0]
+            item = pair[1]
+            order_ids.append(order_id)
+        cancel_args = [[item] for item in order_ids]
+        response = self.request("batch", ["wallet_market_cancel_order", cancel_args])
+        return cancel_args
+
+    def get_last_fill (self, base, quote):
+        last_fill = -1
+        precision_ratio = 0
+        if base == "USD" and quote == "BTSX":
+            precision_ratio = 10
         else:
-            print "Nothing to cancel!"
-            return 1
+            raise Exception(" btsx.py  get_last_fill  -  I only know precision for usd and btsx")
+        response = self.request("blockchain_market_order_history", [base, quote, 0, 1])
+        for order in response.json()["result"]:
+            last_fill = float(order["ask_price"]["ratio"]) * 10
+        return last_fill
+
 
     def wait_for_block(self):
         response = self.request("get_info", [])
@@ -163,4 +149,3 @@ class BTSX():
             blocknum2 = response.json()["result"]["blockchain_head_block_num"]
             if blocknum2 != blocknum:
                 return
-

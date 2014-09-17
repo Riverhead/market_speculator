@@ -1,7 +1,7 @@
 {
     "bots": [
         {
-            "spread_percent": 0.005, 
+            "spread_percent": 0.02, 
             "bot_type": "market_speculator", 
             "asset_pair": [
                 "USD", 
