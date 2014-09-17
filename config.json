@@ -1,0 +1,20 @@
+{
+    "bots": [
+        {
+            "spread_percent": 0.005, 
+            "min_order_size": 100, 
+            "bot_type": "market_speculator", 
+            "asset_pair": [
+                "USD", 
+                "BTSX"
+            ], 
+            "account_name": "test.riverhead", 
+            "min_balance": 100
+        }
+    ], 
+    "client": {
+        "rpc_password": "now2bot", 
+        "rpc_user": "riverheadbot", 
+        "rpc_port": "8000"
+    } 
+}
