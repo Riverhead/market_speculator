@@ -7,7 +7,8 @@
                 "USD", 
                 "BTSX"
             ], 
-            "account_name": "test.riverhead"
+            "account_name": "test.riverhead",
+            "spread_tolerance" : 0.05
         }
     ], 
     "client": {
