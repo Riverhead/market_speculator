@@ -14,4 +14,4 @@ SETUP:
 
 - Modify the config.json to reference your own RPC configutarion.
 - Fund your bot account with at least 501 BTSX       
-- 
+- create a logs directory in the same directory as the python source
