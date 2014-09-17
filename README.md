@@ -6,7 +6,7 @@ IT IS HIGHLY RECOMMENDED YOU SETUP A BOT WALLET/ACCOUNT WITH
 LIMITED FUNDS. IF YOU RUN THIS AGAINST YOUR PRIMARY WALLET
 REALLY "BAD THINGS" COULD HAPPEN.
 
-The purpose of this bought is:
+The purpose of this bot is:
 1) Create a simple bot as a base to create more complex bots
 2) Generate traffic in the bitUSD:BTSX market
 
