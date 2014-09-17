@@ -27,9 +27,10 @@ class MarketSpeculator():
 
         if usd_balance > 10:
             self.client.submit_bid(self.name, 0.3*(usd_balance / new_price), self.quote_symbol, new_price * (1+SPREAD), self.base_symbol)
+            sec_since_update = 0
         if btsx_balance > 500:
             self.client.submit_ask(self.name, 0.3*btsx_balance, self.quote_symbol, new_price * (1-SPREAD), self.base_symbol)
-
+            sec_since_update = 0
         while True:
             new_price   = self.client.get_last_fill(self.base_symbol, self.quote_symbol)
 
@@ -38,17 +39,20 @@ class MarketSpeculator():
 
             if usd_balance > 10:
                self.client.submit_bid(self.name, 0.3*(usd_balance / new_price), self.quote_symbol, new_price * (1+SPREAD), self.base_symbol)
+               sec_since_update = 0
             if btsx_balance > 500:
                self.client.submit_ask(self.name, 0.3*btsx_balance, self.quote_symbol, new_price * (1-SPREAD), self.base_symbol)
+               sec_since_update = 0
 
-            sec_since_update += 2
-            print ("Last Move: %i USD %f BTSX %f started %f" % (sec_since_update, usd_balance, btsx_balance, start_btsx))
+
+            print ("Seconds since last action: %i USD %f BTSX %f started %f" % (sec_since_update, usd_balance, btsx_balance, start_btsx))
+
             time.sleep(2)
+            sec_since_update += 2
 
             if new_price > 0:
                 if (abs(new_price - last_price) / last_price) > (SPREAD / 3):
                    log("Price moved -  old:  %f   new:  %f" % (last_price, new_price))
-                   log("Seconds since previous update:  %d" % sec_since_update)
                   
                    sec_since_update = 0
     

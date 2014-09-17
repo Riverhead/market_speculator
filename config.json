@@ -2,14 +2,12 @@
     "bots": [
         {
             "spread_percent": 0.005, 
-            "min_order_size": 100, 
             "bot_type": "market_speculator", 
             "asset_pair": [
                 "USD", 
                 "BTSX"
             ], 
-            "account_name": "test.riverhead", 
-            "min_balance": 100
+            "account_name": "test.riverhead"
         }
     ], 
     "client": {
